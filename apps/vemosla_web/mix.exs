@@ -48,8 +48,10 @@ defmodule VemoslaWeb.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:vemosla, in_umbrella: true},
+      {:vemosla_mail, in_umbrella: true},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:phx_gen_auth, "~> 0.6", only: [:dev], runtime: false}
     ]
   end
 

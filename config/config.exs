@@ -33,6 +33,12 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Use Jason for JSON parsing in Bamboo
+config :bamboo, :json_library, Jason
+
+config :vemosla_mail, :email,
+  from: "info@vemosla.com"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
