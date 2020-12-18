@@ -26,6 +26,11 @@ defmodule VemoslaWeb.Endpoint do
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
+  plug Plug.Static,
+    at: Application.get_env(:vemosla, :uploads_url_path),
+    from: Application.get_env(:vemosla, :uploads_files_path),
+    gzip: false
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do

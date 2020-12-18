@@ -51,7 +51,9 @@ defmodule VemoslaWeb.MixProject do
       {:vemosla_mail, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:phx_gen_auth, "~> 0.6", only: [:dev], runtime: false}
+      {:phx_gen_auth, "~> 0.6", only: [:dev], runtime: false},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.16"}
     ]
   end
 

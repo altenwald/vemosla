@@ -23,6 +23,7 @@ defmodule Vemosla.Accounts do
   """
   def get_user_by_email(email) when is_binary(email) do
     Repo.get_by(User, email: email)
+    |> Repo.preload(:profile)
   end
 
   @doc """
@@ -40,7 +41,9 @@ defmodule Vemosla.Accounts do
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
-    if User.valid_password?(user, password), do: user
+    if User.valid_password?(user, password) do
+      Repo.preload(user, :profile)
+    end
   end
 
   @doc """
@@ -57,7 +60,10 @@ defmodule Vemosla.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload(:profile)
+  end
 
   ## User registration
 
@@ -228,6 +234,7 @@ defmodule Vemosla.Accounts do
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
     Repo.one(query)
+    |> Repo.preload(:profile)
   end
 
   @doc """
@@ -345,5 +352,155 @@ defmodule Vemosla.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  alias Vemosla.Accounts.Profile
+
+  @doc """
+  Returns the list of profiles.
+
+  ## Examples
+
+      iex> list_profiles()
+      [%Profile{}, ...]
+
+  """
+  def list_profiles do
+    Repo.all(Profile)
+  end
+
+  @doc """
+  Gets a single profile.
+
+  Raises `Ecto.NoResultsError` if the Profile does not exist.
+
+  ## Examples
+
+      iex> get_profile!(123)
+      %Profile{}
+
+      iex> get_profile!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_profile!(id), do: Repo.get!(Profile, id)
+
+  @doc """
+  Creates a profile.
+
+  ## Examples
+
+      iex> create_profile(%{field: value}, "01f29e8d-2af3-490d-a576-9f8b4d384b79")
+      {:ok, %Profile{}}
+
+      iex> create_profile(%{field: bad_value}, "2d7eafb5-9ff4-4b6c-a247-43e7e9feb7fe")
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_profile(attrs \\ %{}, user_id)
+  def create_profile(%{"photo" => %{}} = attrs, user_id) do
+    {final_path, copy_file} =
+      get_file_and_copy(attrs["photo"], user_id)
+
+    Map.put(attrs, "photo", final_path)
+    changeset = Profile.changeset(%Profile{}, attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:create_profile, changeset)
+    |> Ecto.Multi.run(:copy_file, copy_file)
+    |> Repo.transaction()
+  end
+  def create_profile(attrs, user_id) do
+    Profile.changeset(%Profile{}, attrs)
+    |> Repo.insert()
+  end
+
+  defp get_file_and_copy(file, user_id) do
+    ext = case file.content_type do
+      "image/png" -> ".png"
+      "image/jpg" -> ".jpg"
+      "image/jpeg" -> ".jpg"
+      _ -> ".raw"
+    end
+    final_file = user_id <> ext
+    files_path = uploads_files_path()
+    url_path = uploads_url_path()
+    url_file = Path.join(url_path, final_file)
+    final_path = Path.join(files_path, final_file)
+    {
+      url_file,
+      fn _repo, _changes ->
+        case File.cp(file.path, final_path) do
+          :ok -> {:ok, final_path}
+          error -> error
+        end
+      end
+    }
+  end
+
+  defp uploads_url_path() do
+    Application.get_env(:vemosla, :uploads_url_path)
+  end
+
+  defp uploads_files_path() do
+    Application.get_env(:vemosla, :uploads_files_path)
+  end
+
+  @doc """
+  Updates a profile.
+
+  ## Examples
+
+      iex> update_profile(profile, %{field: new_value})
+      {:ok, %Profile{}}
+
+      iex> update_profile(profile, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_profile(%Profile{} = profile, %{"photo" => %{}} = attrs) do
+    {final_path, copy_file} =
+      get_file_and_copy(attrs["photo"], profile.user_id)
+
+    attrs = Map.put(attrs, "photo", final_path)
+    changeset = Profile.changeset(profile, attrs)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:update_profile, changeset)
+    |> Ecto.Multi.run(:copy_file, copy_file)
+    |> Repo.transaction()
+  end
+  def update_profile(%Profile{} = profile, attrs) do
+    Profile.changeset(profile, attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a profile.
+
+  ## Examples
+
+      iex> delete_profile(profile)
+      {:ok, %Profile{}}
+
+      iex> delete_profile(profile)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_profile(%Profile{} = profile) do
+    Repo.delete(profile)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking profile changes.
+
+  ## Examples
+
+      iex> change_profile(profile)
+      %Ecto.Changeset{data: %Profile{}}
+
+  """
+  def change_profile(%Profile{} = profile, attrs \\ %{}) do
+    Profile.changeset(profile, attrs)
   end
 end

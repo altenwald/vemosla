@@ -1,0 +1,30 @@
+<h1>Show Profile</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @profile.name %>
+  </li>
+
+  <li>
+    <strong>Photo:</strong>
+    <img src="<%= @profile.photo %>"/>
+  </li>
+
+  <li>
+    <strong>City:</strong>
+    <%= @profile.city %>
+  </li>
+
+  <li>
+    <strong>Country:</strong>
+    <%= @profile.country %>
+  </li>
+
+</ul>
+
+<%= if @profile.user_id == @current_user.id do %>
+<span><%= link "Edit", to: Routes.profile_path(@conn, :edit) %></span>
+<% end %>
+<span><%= link "Back", to: Routes.page_path(@conn, :index) %></span>

@@ -1,9 +1,11 @@
 defmodule VemoslaWeb.UserRegistrationController do
   use VemoslaWeb, :controller
+  require Logger
 
   alias Vemosla.Accounts
   alias Vemosla.Accounts.User
   alias VemoslaWeb.UserAuth
+  alias VemoslaWeb.Api.Freegeoip
 
   def new(conn, _params) do
     changeset = Accounts.change_user_registration(%User{})
@@ -11,6 +13,9 @@ defmodule VemoslaWeb.UserRegistrationController do
   end
 
   def create(conn, %{"user" => user_params}) do
+    {:ok, loc} = Freegeoip.geoip(conn.remote_ip)
+    profile = Map.merge(user_params["profile"], loc)
+    user_params = %{user_params | "profile" => profile}
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =

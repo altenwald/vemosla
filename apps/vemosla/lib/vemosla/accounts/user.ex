@@ -1,6 +1,7 @@
 defmodule Vemosla.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Vemosla.Accounts.Profile
 
   @derive {Inspect, except: [:password]}
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -10,6 +11,7 @@ defmodule Vemosla.Accounts.User do
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
+    has_one :profile, Profile
 
     timestamps()
   end
@@ -34,6 +36,7 @@ defmodule Vemosla.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
+    |> cast_assoc(:profile)
     |> validate_email()
     |> validate_password(opts)
   end

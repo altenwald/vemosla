@@ -7,6 +7,12 @@
     </div>
   <% end %>
 
+  <%= inputs_for f, :profile, fn p -> %>
+  <%= label p, :name %>
+  <%= text_input p, :name, required: true %>
+  <%= error_tag p, :name %>
+  <% end %>
+
   <%= label f, :email %>
   <%= email_input f, :email, required: true %>
   <%= error_tag f, :email %>

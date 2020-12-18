@@ -36,6 +36,15 @@ config :phoenix, :json_library, Jason
 # Use Jason for JSON parsing in Bamboo
 config :bamboo, :json_library, Jason
 
+config :tesla, adapter: Tesla.Adapter.Hackney
+
+config :vemosla,
+  uploads_files_path: "files",
+  uploads_url_path: "/files"
+
+config :vemosla_web,
+  freegeoip_api_key: ""
+
 config :vemosla_mail, :email,
   from: "info@vemosla.com"
 
