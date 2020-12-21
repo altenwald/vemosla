@@ -70,4 +70,36 @@ defmodule VemoslaMail.Email do
     El equipo de Vemosla!
     """)
   end
+
+  @doc """
+  Deliver instructions to accpet an invitation.
+  """
+  def invitation_instructions(relation, url) do
+    config = config()
+    name = relation.user.profile.name
+    body =
+      case relation.body_msg do
+        "" -> ""
+        msg -> "\n#{name} quiere decirte: #{msg}\n"
+      end
+
+    new_email()
+    |> from(config[:from])
+    |> to(relation.friend_email)
+    |> subject("[Vemosla] Invitación de #{name}")
+    |> text_body("""
+    Hola,
+
+    Te enviamos este mensaje porque el usuario #{name}
+    quiere invitarte para conectar en vemosla.com, sigue el enlace
+    para aceptar su invitación:
+
+    #{url}
+    #{body}
+    Si no tienes cuenta, antes de aceptar la invitación deberás crear
+    la cuenta. Es un proceso rápido, no te preocupes.
+
+    El equipo de Vemosla!
+    """)
+  end
 end

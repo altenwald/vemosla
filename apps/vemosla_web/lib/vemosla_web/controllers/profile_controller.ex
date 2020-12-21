@@ -1,11 +1,17 @@
 defmodule VemoslaWeb.ProfileController do
   use VemoslaWeb, :controller
 
-  alias Vemosla.Accounts
+  alias Vemosla.{Accounts, Contacts}
 
-  def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    render(conn, "show.html", profile: user.profile)
+  def show(conn, %{"id" => user_id}) do
+    friend = conn.assigns.current_user
+    if friend.id == user_id do
+      show(conn, %{})
+    else
+      contact = Contacts.get_relation_by_email_and_user_id(friend.email, user_id)
+      user = Accounts.get_user!(user_id)
+      render(conn, "show.html", profile: user.profile, contact: contact)
+    end
   end
   def show(conn, _params) do
     profile = conn.assigns.current_user.profile

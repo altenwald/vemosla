@@ -36,4 +36,19 @@ defmodule VemoslaMail do
       error -> error
     end
   end
+
+  @doc """
+  Deliver instructions for accept invitation.
+  """
+  def deliver_invitation_instructions(relation, url) do
+    Email.invitation_instructions(relation, url)
+    |> Mailer.deliver_now()
+    |> case do
+      %Bamboo.Email{text_body: body} ->
+        {:ok, %{to: relation.friend_email, body: body}}
+
+      error ->
+        error
+    end
+  end
 end

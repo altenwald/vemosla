@@ -1,0 +1,32 @@
+<h1>Invite</h1>
+
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= if @friend do %>
+  <p>Invitation for <strong><%= @friend.profile.name %></strong></p>
+  <%= hidden_input f, :friend_id, value: @friend.id %>
+  <% else %>
+  <%= label f, :friend_email %>
+  <%= text_input f, :friend_email %>
+  <%= error_tag f, :friend_email %>
+  <% end %>
+
+  <%= label f, :body_msg, "Body Message (optional)" %>
+  <%= textarea f, :body_msg %>
+  <%= error_tag f, :body_msg %>
+
+  <div>
+    <%= submit "Send" %>
+  </div>
+<% end %>
+
+<%= if @friend do %>
+<span><%= link "Back", to: Routes.profile_path(@conn, :show, @friend.id) %></span>
+<% else %>
+<span><%= link "Back", to: Routes.page_path(@conn, :index) %></span>
+<% end %>

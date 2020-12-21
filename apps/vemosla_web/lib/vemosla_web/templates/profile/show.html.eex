@@ -1,5 +1,21 @@
 <h1>Show Profile</h1>
 
+<%= if @contact do %>
+<%= case @contact.kind do %>
+<% "pending" -> %>
+<p>User invited you, accept?</p>
+<span><%= link "Yes", to: Routes.contacts_path(@conn, :accept, @profile.user_id) %></span>
+<span><%= link "No", to: Routes.contacts_path(@conn, :block, @profile.user_id) %></span>
+<% "accepted" -> %>
+<span><%= link "Block User", to: Routes.contacts_path(@conn, :block, @profile.user_id) %></span>
+<% "blocked" -> %>
+<p>You blocked this user, do you want accept it?</p>
+<span><%= link "Accept", to: Routes.contacts_path(@conn, :accept, @profile.user_id) %></span>
+<% end %>
+<% else %>
+<span><%= link "Invite", to: Routes.contacts_path(@conn, :new, @profile.user_id) %></span>
+<% end %>
+
 <ul>
 
   <li>

@@ -74,6 +74,13 @@ defmodule VemoslaWeb.Router do
     put "/users/profile", ProfileController, :update
     patch "/users/profile", ProfileController, :update
 
+    get "/users/invite", ContactsController, :new
+    get "/users/invite/:id", ContactsController, :new
+    post "/users/invite", ContactsController, :create
+    get "/users/invite/:id/accept", ContactsController, :accept
+    get "/users/invite/:id/block", ContactsController, :block
+    get "/users/contacts", ContactsController, :index
+
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
