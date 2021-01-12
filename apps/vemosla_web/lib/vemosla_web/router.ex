@@ -68,6 +68,9 @@ defmodule VemoslaWeb.Router do
   scope "/", VemoslaWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    resources "/posts", PostController, only: [:new, :create, :delete]
+    get "/timeline", PostController, :timeline
+
     get "/users/profile", ProfileController, :show
     get "/users/profile/edit", ProfileController, :edit
     get "/users/:id/profile", ProfileController, :show

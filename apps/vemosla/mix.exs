@@ -41,7 +41,10 @@ defmodule Vemosla.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.17"},
+      {:memoize, "~> 1.3"}
     ]
   end
 

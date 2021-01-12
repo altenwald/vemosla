@@ -410,7 +410,7 @@ defmodule Vemosla.Accounts do
     |> Ecto.Multi.run(:copy_file, copy_file)
     |> Repo.transaction()
   end
-  def create_profile(attrs, user_id) do
+  def create_profile(attrs, _user_id) do
     Profile.changeset(%Profile{}, attrs)
     |> Repo.insert()
   end

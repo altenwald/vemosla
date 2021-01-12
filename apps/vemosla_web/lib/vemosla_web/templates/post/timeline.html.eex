@@ -1,0 +1,21 @@
+<h1>Timeline</h1>
+
+<span><%= link "New Post", to: Routes.post_path(@conn, :new) %></span>
+
+<%= for post <- @posts do %>
+<% reactions = Enum.group_by(post.reactions, & &1.reaction) %>
+<% watched = Enum.count(post.reactions, & &1.watched) %>
+<section class="post movie-<%= post.movie_id %>" background-url="<%= post.movie["backdrop_url"] %>">
+  <h1 class="post-title"><%= post.movie["title"] %></h1>
+  <h2 class="post-tagline"><%= post.movie["tagline"] %></h2>
+  <img class="post-poster" src="<%= post.movie["poster_url"] %>"/>
+  <p class="overview"><%= post.movie["overview"] %></p>
+  <div class="post-description"><%= post.description %></div>
+  <div class="post-visibility"><%= post.visibility %></div>
+  <%= for {reaction, values} <- reactions do %>
+  <div class="post-reaction"><%= reaction %> <%= length(values) %></div>
+  <% end %>
+  <div class="post-watched">Watched <%= watched %>/<%= length(post.reactions) %></div>
+  <span><%= link "Delete", to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %></span>
+</section>
+<% end %>

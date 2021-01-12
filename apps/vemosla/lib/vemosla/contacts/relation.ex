@@ -39,4 +39,8 @@ defmodule Vemosla.Contacts.Relation do
   def kind_query(query, kind) do
     from(r in query, where: r.kind == ^kind)
   end
+
+  def select_friend_ids(query) do
+    from(r in query, select: r.friend_id)
+  end
 end

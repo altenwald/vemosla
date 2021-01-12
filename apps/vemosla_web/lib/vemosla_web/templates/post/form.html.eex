@@ -1,0 +1,47 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= label f, :movie_id %>
+  <%= hidden_input f, :movie_id %>
+  <%= text_input f, :movie_str, autocomplete: "off" %>
+  <datalist id="post_movie_options" class="is-hidden">
+  </datalist>
+  <%= error_tag f, :movie_id %>
+
+  <%= label f, :description %>
+  <%= textarea f, :description %>
+  <%= error_tag f, :description %>
+
+  <%= inputs_for f, :reactions, fn g -> %>
+    <%= label g, :watched %>
+    <%= checkbox g, :watched %>
+
+    <%= label g, :reaction %>
+    <%= select g, :reaction_watched, [
+      {"Love it!", "love_it"},
+      {"Mind-blowing", "mind_blowing"},
+      {"Like it", "like_it"},
+      {"Meh", "meh"},
+      {"Boring", "boring"},
+      {"Dislike it", "dislike_it"},
+      {"Hate it!", "hate_it"}
+    ] %>
+    <%= select g, :reaction_non_watched, [
+      {"Hype!", "hype"},
+      {"Meh", "meh"},
+      {"No way!", "no_way"}
+    ] %>
+  <% end %>
+
+  <%= label f, :visibility %>
+  <%= select f, :visibility, [{"Public - Everyone can see it", "public"}, {"Private - Only contacts can see it", "private"}] %>
+  <%= error_tag f, :visibility %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>
