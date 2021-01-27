@@ -3,7 +3,7 @@ defmodule Vemosla.Timeline.Post do
   import Ecto.Changeset
   import Ecto.Query, only: [from: 2]
   alias Vemosla.Accounts.User
-  alias Vemosla.Timeline.Reaction
+  alias Vemosla.Timeline.{Comment, Reaction}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -13,6 +13,7 @@ defmodule Vemosla.Timeline.Post do
     field :visibility, Ecto.Enum, values: ~w(public private)a, default: :public
     belongs_to :user, User
     has_many :reactions, Reaction, on_delete: :delete_all
+    has_many :comments, Comment, on_delete: :delete_all
 
     timestamps()
   end

@@ -203,23 +203,32 @@ div#credit a {
   color: $primary;
 }
 
+.is-fullwidth {
+  width: 100%;
+}
+
+.post-comments {
+  overflow-y: scroll;
+  height: calc(100% - 2.5rem);
+  max-height: 30.5rem;
+}
+
 /* from Paul Miller profile template */
-  .stat-val {
-    font-size: 3em;
-    padding-top: 20px;
-    font-weight: bold;
-  }
-  
-  .stat-key {
-    font-size: 1.4em;
-    font-weight: 200
-  }
-  
-  .section.profile-heading .column.is-2-tablet.has-text-centered + .has-text-centered {
-    border-left: 1px dotted rgba(0, 0, 0, .2);
-  }
-  
-  .container.profile {
-    margin-top: 1%;
-  }
-  
+.stat-val {
+  font-size: 3em;
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.stat-key {
+  font-size: 1.4em;
+  font-weight: 200
+}
+
+.section.profile-heading .column.is-2-tablet.has-text-centered + .has-text-centered {
+  border-left: 1px dotted rgba(0, 0, 0, .2);
+}
+
+.container.profile {
+  margin-top: 1%;
+}

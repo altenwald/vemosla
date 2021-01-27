@@ -5,7 +5,7 @@
 <% end %>
 
 <%= for post <- @posts do %>
-<section class="post movie-<%= post.movie_id %>" background-url="<%= post.movie["backdrop_url"] %>">
+<section class="post movie-<%= post.movie_id %>" data-post_id="<%= post.id %>" background-url="<%= post.movie["backdrop_url"] %>">
   <h1 class="post-title"><%= post.movie["title"] %></h1>
   <div class="columns">
     <div class="column is-8">
@@ -17,47 +17,67 @@
         <div class="tile is-child">
           <p class="reaction-title">¿Vista?</p>
           <%= render_reactions :watched, post, fn key, value, badge -> %>
-          <div class="reaction">
-            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
+          <div id="reaction-watched-<%= key %>-<%= post.id %>" class="reaction">
+            <img data-watched="true" data-reaction="<%= key %>" data-post="<%= post.id %>" class="reaction-button is-clickable" src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
             <%= if badge > 0 do %>
-            <span class="badge"><%= badge %></span>
+            <span id="badge-watched-<%= key %>-<%= post.id %>" data-post_id="<%= post.id %>" class="badge reaction-badge"><%= badge %></span>
             <% end %>
           </div>
           <% end %>
           <p class="reaction-title">¿No Vista?</p>
           <%= render_reactions :non_watched, post, fn key, value, badge -> %>
-          <div class="reaction">
-            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
+          <div id="reaction-non_watched-<%= key %>-<%= post.id %>" class="reaction">
+            <img data-watched="false" data-reaction="<%= key %>" data-post="<%= post.id %>" class="reaction-button is-clickable" src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
             <%= if badge > 0 do %>
-            <span class="badge"><%= badge %></span>
+            <span id="badge-non_watched-<%= key %>-<%= post.id %>" data-post_id="<%= post.id %>" class="badge reaction-badge"><%= badge %></span>
             <% end %>
           </div>
           <% end %>
         </div>
       </div>
     </div>
-    <div class="column is-4 post-description">
-      <div class="columns">
-        <div class="column is-2 is-hidden-mobile">
-          <img src="<%= post.user.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" width="100%"/>
+    <div class="column is-tablet-4 is-desktop-4 is-widescreen-4 post-description">
+      <div id="post-comments-<%= post.id %>" class="post-comments">
+        <div class="columns">
+          <div class="column is-2 is-hidden-mobile">
+            <img src="<%= post.user.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" width="100%"/>
+          </div>
+          <div class="column is-10">
+            <%= link post.user.profile.name, to: Routes.profile_path(@conn, :show, post.user_id), class: "post-description-author" %>
+            <span class="post-description-content"><%= post.description %></span>
+            <span class="post-description-metainfo">
+              <%= if post.visibility == :public do %>
+              <i title="público" class="fas fa-globe-europe"/></i>
+              <% else %>
+              <i title="privado" class="fas fa-lock"/></i>
+              <% end %>
+              <%= post.inserted_at %>
+            </span>
+          </div>
         </div>
-        <div class="column is-10">
-          <%= link post.user.profile.name, to: Routes.profile_path(@conn, :show, post.user_id), class: "post-description-author" %>
-          <span class="post-description-content"><%= post.description %></span>
-          <span class="post-description-metainfo">
-            <%= if watched?(post.reactions, post.user_id) do %>
-            <i class="fas fa-video" title="vista"></i>
-            <% else %>
-            <i class="fas fa-video-slash" title="no vista"></i>
-            <% end %>
-            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{reacted(post.reactions, post.user_id)}.png") %>" alt="#{reacted.(post_user_id)}"/>
-            <%= post.inserted_at %>
-            <%= if post.visibility == :public do %>
-            <i title="público" class="fas fa-globe-europe"/></i>
-            <% else %>
-            <i title="privado" class="fas fa-lock"/></i>
-            <% end %>
-          </span>
+        <%= for comment <- post.comments do %>
+        <div class="columns">
+          <div class="column is-2 is-hidden-mobile">
+            <img src="<%= comment.user.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" width="100%"/>
+          </div>
+          <div class="column is-10">
+            <%= link comment.user.profile.name, to: Routes.profile_path(@conn, :show, comment.user_id), class: "post-description-author" %>
+            <span class="post-description-content"><%= comment.comment %></span>
+            <span class="post-description-metainfo">
+              <%= comment.inserted_at %>
+            </span>
+          </div>
+        </div>
+        <% end %>
+      </div>
+      <div class="chat">
+        <div class="field has-addons is-justify-content-flex-end">
+          <div class="control is-fullwidth">
+            <input type="text" id="comment-<%= post.id %>" data-post_id="<%= post.id %>" class="input comment-input" placeholder="Escribe comentario..."/>
+          </div>
+          <div class="control">
+            <a href="#" data-post_id="<%= post.id %>" class="button is-primary is-outlined send-button"><i class="fas fa-paper-plane"></i></a>
+          </div>
         </div>
       </div>
     </div>

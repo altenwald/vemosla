@@ -7,7 +7,7 @@ defmodule Vemosla.Timeline do
   alias Vemosla.Repo
 
   alias Vemosla.Contacts.Relation
-  alias Vemosla.Timeline.{Post, Reaction}
+  alias Vemosla.Timeline.{Comment, Post, Reaction}
   alias Vemosla.Movies
 
   @doc """
@@ -43,7 +43,7 @@ defmodule Vemosla.Timeline do
     Post
     |> Post.list_my_timeline(friends_query, blocked_query, blockee_query, user_id)
     |> Repo.all()
-    |> Repo.preload([:reactions, user: :profile])
+    |> Repo.preload([:reactions, user: :profile, comments: [user: :profile]])
     |> Enum.map(fn post ->
       case Movies.get_movie(post.movie_id, size_pos, language) do
         %{} = movie -> Map.put(post, :movie, movie)
@@ -74,6 +74,59 @@ defmodule Vemosla.Timeline do
     Reaction
     |> Reaction.watched(user_id)
     |> Repo.aggregate(:count)
+  end
+
+  def get_reaction_by_post_and_user(post_id, user_id) do
+    Repo.get_by(Reaction, post_id: post_id, user_id: user_id)
+  end
+
+  def all_reactions_by_post(post_id) do
+    reactions =
+      Reaction
+      |> Reaction.by_post_id(post_id)
+      |> Repo.all()
+
+    reactions =
+      for {watched, reaction} <- Reaction.reactions() do
+        %{
+          "watched" => watched,
+          "reaction" => reaction,
+          "count" => Enum.count(
+            reactions,
+            & &1.reaction == reaction and
+              &1.watched == watched
+          )
+        }
+      end
+
+    %{
+      "post_id" => post_id,
+      "reactions" => reactions
+    }
+  end
+
+  def update_reaction(%Reaction{} = reaction, watched, reaction_text) do
+    params = %{"reaction" => reaction_text, "watched" => watched}
+    Reaction.changeset(reaction, params)
+    |> Repo.update()
+  end
+
+  def create_reaction(user_id, post_id, watched, reaction) do
+    params = %{"reaction" => reaction, "watched" => watched, "user_id" => user_id, "post_id" => post_id}
+    Reaction.changeset(%Reaction{}, params)
+    |> Repo.insert()
+  end
+
+  def list_comments_by_post(post_id) do
+    Comment
+    |> Comment.by_post_id(post_id)
+    |> Repo.all()
+  end
+
+  def create_comment(user_id, post_id, comment) do
+    params = %{"comment" => comment, "user_id" => user_id, "post_id" => post_id}
+    Comment.changeset(%Comment{}, params)
+    |> Repo.insert()
   end
 
   @doc """

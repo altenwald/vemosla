@@ -7,6 +7,8 @@ defmodule VemoslaWeb.UserSocket do
   ## Channels
   # channel "room:*", VemoslaWeb.RoomChannel
   channel "topic:search", VemoslaWeb.SearchChannel
+  channel "topic:reactions", VemoslaWeb.ReactionChannel
+  channel "topic:comments", VemoslaWeb.CommentChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -24,8 +26,12 @@ defmodule VemoslaWeb.UserSocket do
     salt = Application.get_env(:vemosla_web, :phoenix_token_salt)
 
     case Phoenix.Token.verify(socket, salt, token, max_age: @max_age) do
-      {:ok, user_id} -> {:ok, assign(socket, :current_user, user_id)}
-      {:error, _reason} -> :error
+      {:ok, user_id} ->
+        user = Vemosla.Accounts.get_user!(user_id)
+        {:ok, assign(socket, :current_user, user)}
+
+      {:error, _reason} ->
+        :error
     end
   end
 

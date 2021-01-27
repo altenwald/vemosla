@@ -10,23 +10,11 @@ defmodule VemoslaWeb.PostView do
   end
 
   defp reactions(:watched) do
-    [
-      "love_it",
-      "mind_blowing",
-      "like_it",
-      "meh",
-      "boring",
-      "dislike_it",
-      "hate_it"
-    ]
+    Vemosla.Timeline.Reaction.reactions(true)
   end
 
   defp reactions(:non_watched) do
-    [
-      "hype",
-      "meh",
-      "no_way"
-    ]
+    Vemosla.Timeline.Reaction.reactions(false)
   end
 
   defp render_reactions(kind, post, render) do
