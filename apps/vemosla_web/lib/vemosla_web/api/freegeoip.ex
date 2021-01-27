@@ -16,13 +16,15 @@ defmodule VemoslaWeb.Api.Freegeoip do
     |> to_string()
     |> geoip()
   end
+
   def geoip(ip) when is_binary(ip) do
     case lookup(ip) do
       {:ok, %{body: body}} ->
-        {:ok, %{
-          "country" => body["country_code"] || "ES",
-          "city" => body["city"] || ""
-        }}
+        {:ok,
+         %{
+           "country" => body["country_code"] || "ES",
+           "city" => body["city"] || ""
+         }}
 
       error ->
         Logger.error("not found IP #{ip}: #{inspect(error)}")

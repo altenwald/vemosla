@@ -6,5 +6,4 @@ defmodule Vemosla.Movies do
 
   defdelegate get_movie(id, size_pos, language),
     to: Themoviedb
-
 end

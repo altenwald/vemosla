@@ -1,27 +1,50 @@
 <%= form_for @changeset, @action, [multipart: true], fn f -> %>
   <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
-    </div>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p>Oops, ¡algo fue mal! Por favor, verifica los errores de abajo.</p>
+      </div>
+    </article>
   <% end %>
 
-  <%= label f, :name %>
-  <%= text_input f, :name %>
-  <%= error_tag f, :name %>
+  <div class="field">
+    <%= label f, :name, class: "label" %>
+    <div class="control">
+      <%= text_input f, :name, class: "input" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :name %></p>
+  </div>
 
-  <%= label f, :photo %>
-  <%= file_input f, :photo %>
-  <%= error_tag f, :photo %>
+  <div class="field">
+    <%= label f, :photo, class: "label" %>
+    <div class="control">
+      <%= file_input f, :photo, class: "input" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :photo %></p>
+  </div>
 
-  <%= label f, :city %>
-  <%= text_input f, :city %>
-  <%= error_tag f, :city %>
+  <div class="field">
+    <%= label f, :city, class: "label" %>
+    <div class="control">
+      <%= text_input f, :city, class: "input" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :city %></p>
+  </div>
 
-  <%= label f, :country %>
-  <%= text_input f, :country %>
-  <%= error_tag f, :country %>
+  <div class="field">
+    <%= label f, :country, class: "label" %>
+    <div class="control">
+      <%= text_input f, :country, class: "input" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :country %></p>
+  </div>
 
-  <div>
-    <%= submit "Save" %>
+  <div class="field is-grouped">
+    <div class="control">
+      <%= submit "Modificar", class: "button is-link" %>
+    </div>
+    <div class="control">
+      <%= link "Cancelar", to: Routes.profile_path(@conn, :show), class: "button is-light" %>
+    </div>
   </div>
 <% end %>

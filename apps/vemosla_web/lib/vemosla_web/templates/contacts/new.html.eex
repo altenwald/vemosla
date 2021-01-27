@@ -1,32 +1,52 @@
-<h1>Invite</h1>
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-<%= form_for @changeset, @action, fn f -> %>
+<h1 class="is-size-4">Invitar</h1>
+
+<%= form_for @changeset, @action, [class: "box"], fn f -> %>
   <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
-    </div>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p>Oops, ¡algo fue mal! Por favor, verifica los errores de abajo.</p>
+      </div>
+    </article>
   <% end %>
 
+  <div class="field">
   <%= if @friend do %>
-  <p>Invitation for <strong><%= @friend.profile.name %></strong></p>
+    <p class="label">Invitación para <strong><%= @friend.profile.name %></strong></p>
   <%= hidden_input f, :friend_id, value: @friend.id %>
   <% else %>
-  <%= label f, :friend_email %>
-  <%= text_input f, :friend_email %>
-  <%= error_tag f, :friend_email %>
+    <%= label f, :friend_email, "Email de Amigo a Invitar", class: "label" %>
+    <div class="control has-icons-left">
+      <%= email_input f, :friend_email, class: "input", placeholder: "e.g. bobsmith@gmail.com" %>
+      <span class="icon is-small is-left"><i class="fa fa-envelope"></i></span>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :friend_email %></p>
   <% end %>
-
-  <%= label f, :body_msg, "Body Message (optional)" %>
-  <%= textarea f, :body_msg %>
-  <%= error_tag f, :body_msg %>
-
-  <div>
-    <%= submit "Send" %>
   </div>
-<% end %>
 
-<%= if @friend do %>
-<span><%= link "Back", to: Routes.profile_path(@conn, :show, @friend.id) %></span>
-<% else %>
-<span><%= link "Back", to: Routes.page_path(@conn, :index) %></span>
+  <div class="field">
+    <%= label f, :body_msg, "Mensaje (opcional)", class: "label" %>
+    <div class="control">
+      <%= textarea f, :body_msg, class: "textarea" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :body_msg %></p>
+  </div>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <%= submit "Enviar", class: "button is-primary" %>
+    </div>
+    <div class="control">
+      <%= if @friend do %>
+        <%= link "Cancelar", to: Routes.profile_path(@conn, :show, @friend.id), class: "button is-light" %>
+      <% else %>
+        <%= link "Cancelar", to: Routes.post_path(@conn, :timeline), class: "button is-light" %>
+      <% end %>
+    </div>
+  </div>
 <% end %>

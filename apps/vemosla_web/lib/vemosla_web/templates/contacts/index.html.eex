@@ -1,80 +1,121 @@
-<h1>Contacts</h1>
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="columns is-8 is-variable box">
+        <div class="column has-text-left">
+
+<h1 class="is-size-4">Contacts</h1>
+<hr/>
 
 <%= if length(@received) > 0 do %>
-<h2>Pending Contacts</h2>
+<h2 class="is-size-5">Contactos Pendientes</h2>
 
+<table class="table">
+<tr>
+  <th colspan="2">Usuario</th>
+  <th>Opciones</th>
+</tr>
 <%= for %{user: u} <- @received do %>
-<div class="profile">
-  <div class="name"><%= u.profile.name %></div>
-  <div class="photo">
-    <img src="<%= u.profile.photo %>"/>
-  </div>
-  <%=
-    link "Accept",
-      to: Routes.contacts_path(@conn, :accept, u.id)
-  %>
-  <%=
-    link "Block",
-      to: Routes.contacts_path(@conn, :block, u.id)
-  %>
-</div>
+<tr>
+  <td class="is-vcentered">
+    <img src="<%= u.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" class="small-avatar"/>
+  </td>
+  <td class="is-vcentered">
+    <%= u.profile.name %>
+  </td>
+  <td class="is-vcentered">
+    <%= link "Acceptar", to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
+    <%= link "Block", to: Routes.contacts_path(@conn, :block, u.id), class: "button is-danger" %>
+  </td>
+</tr>
 <% end %>
+</table>
+<hr/>
 <% end %>
 
-<h2>Pending Requests</h2>
+<h2 class="is-size-5">Peticiones Pendientes</h2>
 <%= if length(@sent["pending"] || []) > 0 do %>
+<table class="table">
+<tr>
+  <th colspan="2">Usuario / Email</th>
+</tr>
 <%= for relation <- @sent["pending"] do %>
 <%= if relation.friend do %>
-<div class="profile">
-  <div class="name">
+<tr>
+  <td class="is-vcentered">
+    <img src="<%= relation.friend.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" class="small-avatar"/>
+  </td>
+  <td class="is-vcentered">
     <%= relation.friend.profile.name %>
-  </div>
-  <div class="photo">
-    <img src="<%= relation.friend.profile.photo %>"/>
-  </div>
-</div>
+  </td>
+</tr>
 <% else %>
-<div class="profile">
-  <div class="email"><%= relation.friend_email %></div>
-</div>
+<tr>
+  <td colspan="2">
+    <%= relation.friend_email %>
+  </td>
+</tr>
 <% end %>
 <% end %>
+</table>
 <% else %>
-<p>You have no friends at the moment :'(</p>
+<p>No tienes peticiones de amistad en estos momentos.</p>
 <% end %>
+<hr/>
 
-<h2>Friends</h2>
+<h2 class="is-size-5">Amigos</h2>
 <%= if length(@sent["accepted"] || []) > 0 do %>
+<table class="table">
+<tr>
+  <th colspan="2">Nombre</th>
+  <th>Opciones</th>
+</tr>
 <%= for %{friend: f} <- @sent["accepted"] do %>
-<div class="profile">
-  <div class="name"><%= f.profile.name %></div>
-  <div class="photo">
-    <img src="<%= f.profile.photo %>"/>
-  </div>
-  <%=
-    link "Block",
-      to: Routes.contacts_path(@conn, :block, f.id)
-  %>
-</div>
+<tr>
+  <td class="is-vcentered">
+    <img src="<%= f.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" class="small-avatar"/>
+  </td>
+  <td class="is-vcentered">
+    <%= f.profile.name %>
+  </td>
+  <td>
+    <%= link "Bloquear", to: Routes.contacts_path(@conn, :block, f.id), class: "button is-danger" %>
+  </td>
+</tr>
 <% end %>
+</table>
 <% else %>
-<p>You have no friends at the moment :'(</p>
+<p>No tienes amigos en estos momentos 😢</p>
+<% end %>
+<hr/>
+
+<h2 class="is-size-5">Bloqueados</h2>
+<%= if length(@blocked) > 0 do %>
+<table class="table">
+<tr>
+  <th colspan="2">Usuario</th>
+  <th>Opciones</th>
+</tr>
+<%= for %{user: u} <- @blocked do %>
+<tr>
+  <td class="is-vcentered">
+    <img src="<%= u.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" class="small-avatar"/>
+  </td>
+  <td class="is-vcentered">
+    <%= u.profile.name %>
+  </td>
+  <td>
+    <%= link "Aceptar", to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
+  </td>
+</tr>
+<% end %>
+</table>
+<% else %>
+<p>No tienes contactos bloqueados en estos momentos 🤗</p>
 <% end %>
 
-<h2>Blocked List</h2>
-<%= if length(@blocked) do %>
-<%= for %{user: u} <- @blocked do %>
-<div class="profile">
-  <div class="name"><%= u.profile.name %></div>
-  <div class="photo">
-    <img src="<%= u.profile.photo %>"/>
+        </div>
+      </div>
+    </div>
   </div>
-  <%=
-    link "Unblock and Add",
-      to: Routes.contacts_path(@conn, :accept, u.id)
-  %>
-</div>
-<% end %>
-<% else %>
-<p>You have no blocked contacts at the moment :)</p>
-<% end %>
+</section>

@@ -1,5 +1,17 @@
 <main role="main" class="container">
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+  <%= if info = get_flash(@conn, :info) do %>
+  <article class="message is-success">
+    <div class="message-body">
+      <%= info %>
+    </div>
+  </article>
+  <% end %>
+  <%= if error = get_flash(@conn, :error) do %>
+  <article class="message is-danger">
+    <div class="message-body">
+      <%= error %>
+    </div>
+  </article>
+  <% end %>
   <%= @inner_content %>
 </main>

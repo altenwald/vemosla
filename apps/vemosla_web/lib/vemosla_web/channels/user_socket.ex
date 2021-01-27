@@ -22,6 +22,7 @@ defmodule VemoslaWeb.UserSocket do
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
     salt = Application.get_env(:vemosla_web, :phoenix_token_salt)
+
     case Phoenix.Token.verify(socket, salt, token, max_age: @max_age) do
       {:ok, user_id} -> {:ok, assign(socket, :current_user, user_id)}
       {:error, _reason} -> :error

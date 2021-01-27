@@ -16,19 +16,28 @@ defmodule VemoslaWeb.SearchChannel do
   # by sending replies to requests from the client
   @impl true
   def handle_in("search", "", socket), do: {:reply, {:ok, ""}, socket}
+
   def handle_in("search", search, socket) do
     now = DateTime.to_unix(DateTime.utc_now())
-    if (socket.assigns[:last_search] < now) do
-      size_pos = 2
+
+    if socket.assigns[:last_search] < now do
+      size_pos = 0
       language = "es"
       page = 1
       include_adult = false
+
       case Vemosla.Movies.search_movie(search, size_pos, page, language, include_adult) do
         %{"results" => results} ->
           results =
-            results
-            |> Enum.map(& {&1["id"], &1["title"]})
-            |> Enum.into(%{})
+            Enum.map(
+              results,
+              &%{
+                "id" => &1["id"],
+                "title" => &1["title"],
+                "overview" => &1["overview"],
+                "poster_url" => &1["poster_url"] || "/images/movie.png"
+              }
+            )
 
           {:reply, {:ok, results}, assign(socket, :last_search, now + @wait_time)}
 

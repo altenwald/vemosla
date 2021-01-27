@@ -10,6 +10,7 @@ defmodule VemoslaMail.Email do
   """
   def confirmation_instructions(user, url) do
     config = config()
+
     new_email()
     |> from(config[:from])
     |> to(user.email)
@@ -32,6 +33,7 @@ defmodule VemoslaMail.Email do
   """
   def reset_password_instructions(user, url) do
     config = config()
+
     new_email()
     |> from(config[:from])
     |> to(user.email)
@@ -54,6 +56,7 @@ defmodule VemoslaMail.Email do
   """
   def update_email_instructions(user, url) do
     config = config()
+
     new_email()
     |> from(config[:from])
     |> to(user.email)
@@ -77,6 +80,7 @@ defmodule VemoslaMail.Email do
   def invitation_instructions(relation, url) do
     config = config()
     name = relation.user.profile.name
+
     body =
       case relation.body_msg do
         "" -> ""

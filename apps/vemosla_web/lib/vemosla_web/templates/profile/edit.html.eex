@@ -1,5 +1,12 @@
-<h1>Edit Profile</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.profile_path(@conn, :update)) %>
-
-<span><%= link "Back", to: Routes.page_path(@conn, :index) %></span>
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="columns is-8 is-variable box">
+        <div class="column has-text-left">
+          <h3 class="is-size-3">Edita Perfil</h3>
+          <%= render "form.html", Map.put(assigns, :action, Routes.profile_path(@conn, :update)) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

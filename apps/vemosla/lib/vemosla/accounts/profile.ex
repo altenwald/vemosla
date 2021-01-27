@@ -23,8 +23,6 @@ defmodule Vemosla.Accounts.Profile do
     profile
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
-    |> validate_format(:photo, ~r/\.(jpg|png)$/,
-      message: "photo should be PNG or JPEG format"
-    )
+    |> validate_format(:photo, ~r/\.(jpg|png)$/, message: "photo should be PNG or JPEG format")
   end
 end

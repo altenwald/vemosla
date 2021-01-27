@@ -1,46 +1,87 @@
-<h1>Show Profile</h1>
-
-<%= if @contact do %>
-<%= case @contact.kind do %>
-<% "pending" -> %>
-<p>User invited you, accept?</p>
-<span><%= link "Yes", to: Routes.contacts_path(@conn, :accept, @profile.user_id) %></span>
-<span><%= link "No", to: Routes.contacts_path(@conn, :block, @profile.user_id) %></span>
-<% "accepted" -> %>
-<span><%= link "Block User", to: Routes.contacts_path(@conn, :block, @profile.user_id) %></span>
-<% "blocked" -> %>
-<p>You blocked this user, do you want accept it?</p>
-<span><%= link "Accept", to: Routes.contacts_path(@conn, :accept, @profile.user_id) %></span>
-<% end %>
-<% else %>
-<span><%= link "Invite", to: Routes.contacts_path(@conn, :new, @profile.user_id) %></span>
-<% end %>
-
-<ul>
-
-  <li>
-    <strong>Name:</strong>
-    <%= @profile.name %>
-  </li>
-
-  <li>
-    <strong>Photo:</strong>
-    <img src="<%= @profile.photo %>"/>
-  </li>
-
-  <li>
-    <strong>City:</strong>
-    <%= @profile.city %>
-  </li>
-
-  <li>
-    <strong>Country:</strong>
-    <%= @profile.country %>
-  </li>
-
-</ul>
-
-<%= if @profile.user_id == @current_user.id do %>
-<span><%= link "Edit", to: Routes.profile_path(@conn, :edit) %></span>
-<% end %>
-<span><%= link "Back", to: Routes.page_path(@conn, :index) %></span>
+<div class="columns">
+  <div class="container profile box">
+    <section class="profile-heading">
+      <div class="columns">
+        <div class="column is-2">
+          <span class="header-icon user-profile-image">
+            <img alt='' src="<%= @profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>"/>
+          </span>
+        </div>
+        <div class="column is-4-tablet is-10-mobile name">
+          <p>
+            <span class="title is-bold"><%= @profile.name %></span>
+            <br/>
+            <%= if @profile.user_id == @current_user.id do %>
+            <a class="button is-primary is-outlined" href="<%= Routes.profile_path(@conn, :edit) %>">Edita Perfil</a>
+            <% end %>
+            <br/>
+          </p>
+          <p class="tagline">
+            <!-- TODO bio? -->
+            <ul>
+              <li>
+                <strong>City:</strong>
+                <%= @profile.city %>
+              </li>
+              <li>
+                <strong>Country:</strong>
+                <%= @profile.country %>
+              </li>
+            </ul>
+          </p>
+        </div>
+        <div class="column is-2-tablet is-4-mobile has-text-centered">
+          <p class="stat-val"><%= @watched %></p>
+          <p class="stat-key">Vistas</p>
+        </div>
+        <div class="column is-2-tablet is-4-mobile has-text-centered">
+          <p class="stat-val"><%= @want_watch %></p>
+          <p class="stat-key">Quiere Ver</p>
+        </div>
+        <div class="column is-2-tablet is-4-mobile has-text-centered">
+          <p class="stat-val"><%= @contacts["accepted"] || 0 %></p>
+          <p class="stat-key">Contactos</p>
+        </div>
+      </div>
+    </section>
+    <%= if @contact do %>
+    <section class="profile-contact">
+      <div class="columns">
+        <%= case @contact.kind do %>
+        <% "pending" -> %>
+        <div class="column">
+          <p>Usuario te invitó, ¿aceptas?</p>
+        </div>
+        <div class="column">
+          <%= link "Acepta", to: Routes.contacts_path(@conn, :accept, @profile.user_id), class: "button is-success is-outline" %>
+        </div>
+        <div class="column">
+          <%= link "Bloquea", to: Routes.contacts_path(@conn, :block, @profile.user_id), class: "button is-danger is-outline" %>
+        </div>
+        <% "accepted" -> %>
+        <div class="column">
+          <%= link "Bloquea Usuario", to: Routes.contacts_path(@conn, :block, @profile.user_id), class: "button is-danger is-outline" %>
+        </div>
+        <% "blocked" -> %>
+        <div class="column">
+          <p>Este usuario está bloqueado, ¿quieres aceptarlo?</p>
+        </div>
+        <div class="column">
+          <%= link "Acepta Usuario", to: Routes.contacts_path(@conn, :accept, @profile.user_id), class: "button is-success is-outline" %>
+        </div>
+        <% end %>
+      </div>
+    </section>
+    <% else %>
+    <%= if @current_user.id != @profile.user_id do %>
+    <section class="profile-contact">
+      <div class="columns">
+        <div class="column">
+          <%= link "Conectar", to: Routes.contacts_path(@conn, :new, @profile.user_id), class: "button is-success is-outline" %>
+        </div>
+      </div>
+    </section>
+    <% end %>
+    <% end %>
+  </div>
+</div>

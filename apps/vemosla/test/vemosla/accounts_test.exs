@@ -505,8 +505,18 @@ defmodule Vemosla.AccountsTest do
   describe "profiles" do
     alias Vemosla.Accounts.Profile
 
-    @valid_attrs %{city: "some city", country: "some country", name: "some name", photo: "some photo"}
-    @update_attrs %{city: "some updated city", country: "some updated country", name: "some updated name", photo: "some updated photo"}
+    @valid_attrs %{
+      city: "some city",
+      country: "some country",
+      name: "some name",
+      photo: "some photo"
+    }
+    @update_attrs %{
+      city: "some updated city",
+      country: "some updated country",
+      name: "some updated name",
+      photo: "some updated photo"
+    }
     @invalid_attrs %{city: nil, country: nil, name: nil, photo: nil}
 
     def profile_fixture(attrs \\ %{}) do

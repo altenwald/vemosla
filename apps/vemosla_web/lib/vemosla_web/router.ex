@@ -17,7 +17,7 @@ defmodule VemoslaWeb.Router do
     plug :accepts, ["json"]
   end
 
-  if Mix.env == :dev do
+  if Mix.env() == :dev do
     # If using Phoenix
     forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
@@ -25,7 +25,7 @@ defmodule VemoslaWeb.Router do
   scope "/", VemoslaWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    get "/", PageController, :index
     get "/about", PageController, :index
   end
 

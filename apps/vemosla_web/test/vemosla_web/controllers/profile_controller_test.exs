@@ -3,8 +3,18 @@ defmodule VemoslaWeb.ProfileControllerTest do
 
   alias Vemosla.Accounts
 
-  @create_attrs %{city: "some city", country: "some country", name: "some name", photo: "some photo"}
-  @update_attrs %{city: "some updated city", country: "some updated country", name: "some updated name", photo: "some updated photo"}
+  @create_attrs %{
+    city: "some city",
+    country: "some country",
+    name: "some name",
+    photo: "some photo"
+  }
+  @update_attrs %{
+    city: "some updated city",
+    country: "some updated country",
+    name: "some updated name",
+    photo: "some updated photo"
+  }
   @invalid_attrs %{city: nil, country: nil, name: nil, photo: nil}
 
   def fixture(:profile) do
@@ -75,6 +85,7 @@ defmodule VemoslaWeb.ProfileControllerTest do
     test "deletes chosen profile", %{conn: conn, profile: profile} do
       conn = delete(conn, Routes.profile_path(conn, :delete, profile))
       assert redirected_to(conn) == Routes.profile_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.profile_path(conn, :show, profile))
       end

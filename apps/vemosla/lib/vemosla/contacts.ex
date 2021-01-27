@@ -26,7 +26,7 @@ defmodule Vemosla.Contacts do
     Relation
     |> Relation.user_id_query(user_id)
     |> Repo.all()
-    |> Repo.preload([friend: :profile])
+    |> Repo.preload(friend: :profile)
   end
 
   def list_received_invitations(user_id) do
@@ -34,7 +34,7 @@ defmodule Vemosla.Contacts do
     |> Relation.friend_id_query(user_id)
     |> Relation.kind_query("pending")
     |> Repo.all()
-    |> Repo.preload([user: :profile])
+    |> Repo.preload(user: :profile)
   end
 
   def list_blocked_users(user_id) do
@@ -42,7 +42,7 @@ defmodule Vemosla.Contacts do
     |> Relation.friend_id_query(user_id)
     |> Relation.kind_query("blocked")
     |> Repo.all()
-    |> Repo.preload([user: :profile])
+    |> Repo.preload(user: :profile)
   end
 
   @doc """
@@ -96,7 +96,7 @@ defmodule Vemosla.Contacts do
     |> Ecto.Multi.insert(:create_invitation, changeset)
     |> Ecto.Multi.run(:send_email, fn _repo, changes ->
       changes[:create_invitation]
-      |> Repo.preload([user: :profile])
+      |> Repo.preload(user: :profile)
       |> VemoslaMail.deliver_invitation_instructions(url)
     end)
     |> Repo.transaction()
@@ -128,6 +128,7 @@ defmodule Vemosla.Contacts do
       "kind" => kind
     })
   end
+
   defp create_or_update_relation(relation, kind, _user, friend) do
     update_relation(relation, %{
       "friend_id" => friend.id,
@@ -137,6 +138,7 @@ defmodule Vemosla.Contacts do
 
   def accept_invitation(nil, _friend), do: {:error, :notfound}
   def accept_invitation(_user, nil), do: {:error, :notfound}
+
   def accept_invitation(user, friend) do
     friend.email
     |> get_relation_by_email_and_user_id(user.id)
@@ -149,6 +151,7 @@ defmodule Vemosla.Contacts do
 
   def block_user(nil, _friend), do: {:error, :notfound}
   def block_user(_user, nil), do: {:error, :notfound}
+
   def block_user(user, friend) do
     friend.email
     |> get_relation_by_email_and_user_id(user.id)
@@ -172,6 +175,7 @@ defmodule Vemosla.Contacts do
 
   """
   def delete_relation(nil), do: nil
+
   def delete_relation(%Relation{} = relation) do
     Repo.delete(relation)
   end
@@ -187,5 +191,13 @@ defmodule Vemosla.Contacts do
   """
   def change_relation(%Relation{} = relation, attrs \\ %{}) do
     Relation.changeset(relation, attrs)
+  end
+
+  def contacts_sum(user_id) do
+    Relation
+    |> Relation.user_id_query(user_id)
+    |> Relation.select_kind_group_and_count()
+    |> Repo.all()
+    |> Enum.reduce(%{}, &Map.merge/2)
   end
 end

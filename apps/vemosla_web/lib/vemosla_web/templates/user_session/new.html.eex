@@ -1,27 +1,55 @@
-<h1>Log in</h1>
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-<%= form_for @conn, Routes.user_session_path(@conn, :create), [as: :user], fn f -> %>
+<h1 class="is-size-4">Inicio de Sesión</h1>
+
+<%= form_for @conn, Routes.user_session_path(@conn, :create), [as: :user, class: "box"], fn f -> %>
   <%= if @error_message do %>
-    <div class="alert alert-danger">
-      <p><%= @error_message %></p>
-    </div>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p><%= @error_message %></p>
+      </div>
+    </article>
   <% end %>
 
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
+  <div class="field">
+    <%= label f, :email, class: "label" %>
+    <div class="control has-icons-left">
+      <%= email_input f, :email, required: true, class: "input", placeholder: "e.g. bobsmith@gmail.com" %>
+      <span class="icon is-small is-left"><i class="fa fa-envelope"></i></span>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :email %></p>
+  </div>
 
-  <%= label f, :password %>
-  <%= password_input f, :password, required: true %>
+  <div class="field">
+    <%= label f, :password, "Clave", class: "label" %>
+    <div class="control has-icons-left">
+      <%= password_input f, :password, required: true, class: "input", placeholder: "**********" %>
+      <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :password %></p>
+  </div>
 
-  <%= label f, :remember_me, "Keep me logged in for 60 days" %>
-  <%= checkbox f, :remember_me %>
+  <div class="field">
+    <%= checkbox f, :remember_me %>
+    <%= label f, :remember_me, "Mantén mi sesión 60 días", class: "checkbox" %>
+  </div>
 
-  <div>
-    <%= submit "Log in" %>
+  <div class="field">
+    <%= submit "Entrar", class: "button is-primary" %>
   </div>
 <% end %>
 
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
+<p class="has-text-centered">
+  <%= link "Crear cuenta", to: Routes.user_registration_path(@conn, :new), class: "button is-light" %>
+  <%= link "Olvidé mi clave", to: Routes.user_reset_password_path(@conn, :new), class: "button is-light" %>
 </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

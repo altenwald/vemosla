@@ -16,6 +16,7 @@ defmodule VemoslaWeb.UserRegistrationController do
     {:ok, loc} = Freegeoip.geoip(conn.remote_ip)
     profile = Map.merge(user_params["profile"], loc)
     user_params = %{user_params | "profile" => profile}
+
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =

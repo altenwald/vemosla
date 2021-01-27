@@ -1,26 +1,52 @@
-<h1>Reset password</h1>
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-<%= form_for @changeset, Routes.user_reset_password_path(@conn, :update, @token), fn f -> %>
+<h1 class="is-size-4">Recuperar Cuenta</h1>
+
+<%= form_for @changeset, Routes.user_reset_password_path(@conn, :update, @token), [class: "box"], fn f -> %>
   <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
-    </div>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p>Oops, ¡algo fue mal! Por favor, verifica los errores de abajo.</p>
+      </div>
+    </article>
   <% end %>
 
-  <%= label f, :password, "New password" %>
-  <%= password_input f, :password, required: true %>
-  <%= error_tag f, :password %>
+  <div class="field">
+    <%= label f, :password, "Nueva Clave", class: "label" %>
+    <div class="control has-icons-left">
+      <%= password_input f, :password, required: true, class: "input", placeholder: "**********" %>
+      <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :password %></p>
+  </div>
 
-  <%= label f, :password_confirmation, "Confirm new password" %>
-  <%= password_input f, :password_confirmation, required: true %>
-  <%= error_tag f, :password_confirmation %>
+  <div class="field">
+    <%= label f, :password_confirmation, "Confirma Nueva Clave", class: "label" %>
+    <div class="control has-icons-left">
+      <%= password_input f, :password_confirmation, required: true, class: "input", placeholder: "**********" %>
+      <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :password_confirmation %></p>
+  </div>
 
-  <div>
-    <%= submit "Reset password" %>
+  <div class="field">
+    <div class="control">
+      <%= submit "Restablecer Clave", class: "button is-primary" %>
+    </div>
   </div>
 <% end %>
 
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
+<p class="has-text-centered">
+  <%= link "Crear cuenta", to: Routes.user_registration_path(@conn, :new), class: "button is-light" %>
+  <%= link "Inicia sesión", to: Routes.user_session_path(@conn, :new), class: "button is-light" %>
 </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

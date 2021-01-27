@@ -1,21 +1,71 @@
-<h1>Timeline</h1>
-
-<span><%= link "New Post", to: Routes.post_path(@conn, :new) %></span>
+<%= link to: Routes.post_path(@conn, :new) do %>
+  <div class="new-post">
+    <i class="fas fa-feather-alt"></i>
+  </div>
+<% end %>
 
 <%= for post <- @posts do %>
-<% reactions = Enum.group_by(post.reactions, & &1.reaction) %>
-<% watched = Enum.count(post.reactions, & &1.watched) %>
 <section class="post movie-<%= post.movie_id %>" background-url="<%= post.movie["backdrop_url"] %>">
   <h1 class="post-title"><%= post.movie["title"] %></h1>
-  <h2 class="post-tagline"><%= post.movie["tagline"] %></h2>
-  <img class="post-poster" src="<%= post.movie["poster_url"] %>"/>
-  <p class="overview"><%= post.movie["overview"] %></p>
-  <div class="post-description"><%= post.description %></div>
-  <div class="post-visibility"><%= post.visibility %></div>
-  <%= for {reaction, values} <- reactions do %>
-  <div class="post-reaction"><%= reaction %> <%= length(values) %></div>
+  <div class="columns">
+    <div class="column is-8">
+      <div class="tile is-12 is-vertical is-parent">
+        <div class="tile is-child">
+          <img class="post-poster" src="<%= post.movie["poster_url"] %>"/>
+          <p class="overview"><%= post.movie["overview"] %></p>
+        </div>
+        <div class="tile is-child">
+          <p class="reaction-title">¿Vista?</p>
+          <%= render_reactions :watched, post, fn key, value, badge -> %>
+          <div class="reaction">
+            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
+            <%= if badge > 0 do %>
+            <span class="badge"><%= badge %></span>
+            <% end %>
+          </div>
+          <% end %>
+          <p class="reaction-title">¿No Vista?</p>
+          <%= render_reactions :non_watched, post, fn key, value, badge -> %>
+          <div class="reaction">
+            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{key}.png") %>" alt="<%= value %>"/>
+            <%= if badge > 0 do %>
+            <span class="badge"><%= badge %></span>
+            <% end %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="column is-4 post-description">
+      <div class="columns">
+        <div class="column is-2 is-hidden-mobile">
+          <img src="<%= post.user.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" width="100%"/>
+        </div>
+        <div class="column is-10">
+          <%= link post.user.profile.name, to: Routes.profile_path(@conn, :show, post.user_id), class: "post-description-author" %>
+          <span class="post-description-content"><%= post.description %></span>
+          <span class="post-description-metainfo">
+            <%= if watched?(post.reactions, post.user_id) do %>
+            <i class="fas fa-video" title="vista"></i>
+            <% else %>
+            <i class="fas fa-video-slash" title="no vista"></i>
+            <% end %>
+            <img src="<%= Routes.static_path(@conn, "/images/reactions/#{reacted(post.reactions, post.user_id)}.png") %>" alt="#{reacted.(post_user_id)}"/>
+            <%= post.inserted_at %>
+            <%= if post.visibility == :public do %>
+            <i title="público" class="fas fa-globe-europe"/></i>
+            <% else %>
+            <i title="privado" class="fas fa-lock"/></i>
+            <% end %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= if @current_user.id == post.user_id do %>
+  <%= link to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] do %>
+    <button class="delete" aria-label="close"></button>
   <% end %>
-  <div class="post-watched">Watched <%= watched %>/<%= length(post.reactions) %></div>
-  <span><%= link "Delete", to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %></span>
+  <% end %>
 </section>
 <% end %>

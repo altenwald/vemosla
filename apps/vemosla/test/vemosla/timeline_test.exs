@@ -7,7 +7,11 @@ defmodule Vemosla.TimelineTest do
     alias Vemosla.Timeline.Post
 
     @valid_attrs %{description: "some description", movie_id: 42, visibility: "some visibility"}
-    @update_attrs %{description: "some updated description", movie_id: 43, visibility: "some updated visibility"}
+    @update_attrs %{
+      description: "some updated description",
+      movie_id: 43,
+      visibility: "some updated visibility"
+    }
     @invalid_attrs %{description: nil, movie_id: nil, visibility: nil}
 
     def post_fixture(attrs \\ %{}) do

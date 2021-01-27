@@ -4,12 +4,14 @@ defmodule Vemosla.Api.Themoviedb do
 
   @default_language "es"
 
-  plug Tesla.Middleware.BaseUrl, "http://api.themoviedb.org"
-  plug Tesla.Middleware.Headers, [
+  plug(Tesla.Middleware.BaseUrl, "http://api.themoviedb.org")
+
+  plug(Tesla.Middleware.Headers, [
     {"Content-type", "application/json; charset=utf-8"},
     {"Authorization", "Bearer #{api_key()}"}
-  ]
-  plug Tesla.Middleware.JSON
+  ])
+
+  plug(Tesla.Middleware.JSON)
 
   defp api_key do
     Application.get_env(:vemosla, :themoviedb_token)
@@ -22,17 +24,20 @@ defmodule Vemosla.Api.Themoviedb do
     end
   end
 
-  defmemo trending(size_pos, media_type \\ "all", window \\ "day", language \\ @default_language), expires_in: 3_600 do
+  defmemo trending(size_pos, media_type \\ "all", window \\ "day", language \\ @default_language),
+    expires_in: 3_600 do
     get("/3/trending/#{media_type}/#{window}", query: %{"language" => language})
     |> process_multi(size_pos, language)
   end
 
-  defmemo similar_movies(id, size_pos, page \\ 1, language \\ @default_language), expires: 24 * 3_600_000 do
+  defmemo similar_movies(id, size_pos, page \\ 1, language \\ @default_language),
+    expires: 24 * 3_600_000 do
     get("/3/movie/#{id}/similar", query: %{"language" => language, "page" => page})
     |> process_movies(size_pos, language)
   end
 
-  defmemo recommended_movies(id, size_pos, page \\ 1, language \\ @default_language), expires: 24 * 3_600_000 do
+  defmemo recommended_movies(id, size_pos, page \\ 1, language \\ @default_language),
+    expires: 24 * 3_600_000 do
     get("/3/movie/#{id}/recommendations", query: %{"language" => language, "page" => page})
     |> process_movies(size_pos, language)
   end
@@ -40,28 +45,34 @@ defmodule Vemosla.Api.Themoviedb do
   defmemo movie_alternative_title(id, country), expires: 24 * 3_600_000 do
     case get("/3/movie/#{id}/alternative_titles") do
       {:ok, %{body: %{"titles" => titles}}} ->
-        Enum.find(titles, & &1["iso_3166_1"] == country)
+        Enum.find(titles, &(&1["iso_3166_1"] == country))
         |> case do
           nil -> nil
           %{"title" => title} -> title
         end
 
-      {:ok, _resp} -> nil
-      {:error, _error} -> nil
+      {:ok, _resp} ->
+        nil
+
+      {:error, _error} ->
+        nil
     end
   end
 
   defmemo tv_alternative_title(id, country), expires: 24 * 3_600_000 do
     case get("/3/tv/#{id}/alternative_titles") do
       {:ok, %{body: %{"titles" => titles}}} ->
-        Enum.find(titles, & &1["iso_3166_1"] == country)
+        Enum.find(titles, &(&1["iso_3166_1"] == country))
         |> case do
           nil -> nil
           %{"title" => title} -> title
         end
 
-      {:ok, _resp} -> nil
-      {:error, _error} -> nil
+      {:ok, _resp} ->
+        nil
+
+      {:error, _error} ->
+        nil
     end
   end
 
@@ -73,7 +84,9 @@ defmodule Vemosla.Api.Themoviedb do
           "crew" => Enum.map(crew, &process_person(&1, size_pos, language)),
           "cast" => Enum.map(cast, &process_person(&1, size_pos, language))
         }
-      {:error, _} = error -> error
+
+      {:error, _} = error ->
+        error
     end
   end
 
@@ -82,36 +95,46 @@ defmodule Vemosla.Api.Themoviedb do
       "language" => language,
       "include_image_language" => "#{language},en,null"
     }
+
     case get("/3/movie/#{id}/images", query: query) do
       {:ok, %{body: %{"id" => id, "backdrops" => backdrops, "posters" => posters}}} ->
         %{
           "id" => id,
-          "backdrops" => Enum.map(backdrops, fn backdrop ->
-            url = path_to_url("backdrop", backdrop["file_path"], size_pos)
-            Map.put(backdrop, "file_url", url)
-          end),
-          "posters" => Enum.map(posters, fn poster ->
-            url = path_to_url("poster", poster["file_path"], size_pos)
-            Map.put(poster, "file_url", url)
-          end)
+          "backdrops" =>
+            Enum.map(backdrops, fn backdrop ->
+              url = path_to_url("backdrop", backdrop["file_path"], size_pos)
+              Map.put(backdrop, "file_url", url)
+            end),
+          "posters" =>
+            Enum.map(posters, fn poster ->
+              url = path_to_url("poster", poster["file_path"], size_pos)
+              Map.put(poster, "file_url", url)
+            end)
         }
 
-      {:error, _} = error -> error
+      {:error, _} = error ->
+        error
     end
   end
 
   defmemo watch(id, country, size_pos), expires: 24 * 3_600_000 do
     case get("/3/movie/#{id}/watch/providers") do
       {:ok, %{body: %{"results" => %{^country => options}}}} ->
-        rent = Enum.map(options["rent"], fn entry ->
-          Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
-        end)
-        buy = Enum.map(options["buy"], fn entry ->
-          Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
-        end)
-        flat = Enum.map(options["flatrate"], fn entry ->
-          Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
-        end)
+        rent =
+          Enum.map(options["rent"], fn entry ->
+            Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
+          end)
+
+        buy =
+          Enum.map(options["buy"], fn entry ->
+            Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
+          end)
+
+        flat =
+          Enum.map(options["flatrate"], fn entry ->
+            Map.put(entry, "logo_url", path_to_url("logo", entry["logo_path"], size_pos))
+          end)
+
         %{
           "link" => options["link"],
           "flatrate" => flat,
@@ -119,17 +142,22 @@ defmodule Vemosla.Api.Themoviedb do
           "buy" => buy
         }
 
-      {:ok, _resp} -> {:error, :enocountry}
-      {:error, _} = error -> error
+      {:ok, _resp} ->
+        {:error, :enocountry}
+
+      {:error, _} = error ->
+        error
     end
   end
 
-  defmemo now_playing(size_pos, country, page \\ 1, language \\ @default_language), expires: 24 * 3_600_000 do
+  defmemo now_playing(size_pos, country, page \\ 1, language \\ @default_language),
+    expires: 24 * 3_600_000 do
     query = %{
       "region" => country,
       "page" => page,
       "language" => language
     }
+
     get("/3/movie/now_playing", query: query)
     |> process_movies(size_pos, language)
   end
@@ -197,6 +225,7 @@ defmodule Vemosla.Api.Themoviedb do
   end
 
   def path_to_url(_type, nil, _size_pos), do: nil
+
   def path_to_url(type, path, size_pos) do
     cfg = configuration()
     size = Enum.at(cfg["images"]["#{type}_sizes"], size_pos)
@@ -204,12 +233,14 @@ defmodule Vemosla.Api.Themoviedb do
   end
 
   def search(query, size_pos, page \\ 1, language \\ @default_language, include_adult \\ false) do
-    get("/3/search/multi", query: %{
-      "query" => query,
-      "page" => page,
-      "language" => language,
-      "include_adult" => include_adult
-    })
+    get("/3/search/multi",
+      query: %{
+        "query" => query,
+        "page" => page,
+        "language" => language,
+        "include_adult" => include_adult
+      }
+    )
     |> process_multi(size_pos, language)
   end
 
@@ -225,17 +256,20 @@ defmodule Vemosla.Api.Themoviedb do
 
     put_in(body["results"], results)
   end
+
   defp process_multi({:error, _} = error, _size_pos, _language) do
     error
   end
 
   def search_tv(query, size_pos, page \\ 1, language \\ @default_language, include_adult \\ false) do
-    get("/3/search/tv", query: %{
-      "query" => query,
-      "page" => page,
-      "language" => language,
-      "include_adult" => include_adult
-    })
+    get("/3/search/tv",
+      query: %{
+        "query" => query,
+        "page" => page,
+        "language" => language,
+        "include_adult" => include_adult
+      }
+    )
     |> process_tv_shows(size_pos, language)
   end
 
@@ -247,6 +281,7 @@ defmodule Vemosla.Api.Themoviedb do
 
     put_in(body["results"], results)
   end
+
   defp process_tv_shows({:error, _} = error, _size_pos, _language) do
     error
   end
@@ -265,13 +300,21 @@ defmodule Vemosla.Api.Themoviedb do
     |> Map.drop(["name", "first_air_date", "original_name"])
   end
 
-  def search_person(query, size_pos, page \\ 1, language \\ @default_language, include_adult \\ false) do
-    get("/3/search/person", query: %{
-      "query" => query,
-      "page" => page,
-      "language" => language,
-      "include_adult" => include_adult
-    })
+  def search_person(
+        query,
+        size_pos,
+        page \\ 1,
+        language \\ @default_language,
+        include_adult \\ false
+      ) do
+    get("/3/search/person",
+      query: %{
+        "query" => query,
+        "page" => page,
+        "language" => language,
+        "include_adult" => include_adult
+      }
+    )
     |> process_people(size_pos, language)
   end
 
@@ -283,6 +326,7 @@ defmodule Vemosla.Api.Themoviedb do
 
     put_in(body["results"], results)
   end
+
   defp process_people({:error, _} = error, _size_pos, _language) do
     error
   end
@@ -291,20 +335,29 @@ defmodule Vemosla.Api.Themoviedb do
     Map.merge(result, %{
       "profile_url" => path_to_url("profile", result["profile_path"], size_pos),
       "media_type" => "person",
-      "known_for" => Enum.map(result["known_for"], fn
-        (%{"media_type" => "movie"} = movie) -> process_movie(movie, size_pos, language)
-        (%{"media_type" => "tv"}= tv) -> process_tv_show(tv, size_pos, language)
-      end)
+      "known_for" =>
+        Enum.map(result["known_for"], fn
+          %{"media_type" => "movie"} = movie -> process_movie(movie, size_pos, language)
+          %{"media_type" => "tv"} = tv -> process_tv_show(tv, size_pos, language)
+        end)
     })
   end
 
-  def search_movie(query, size_pos, page \\ 1, language \\ @default_language, include_adult \\ false) do
-    get("/3/search/movie", query: %{
-      "query" => query,
-      "page" => page,
-      "language" => language,
-      "include_adult" => include_adult
-    })
+  def search_movie(
+        query,
+        size_pos,
+        page \\ 1,
+        language \\ @default_language,
+        include_adult \\ false
+      ) do
+    get("/3/search/movie",
+      query: %{
+        "query" => query,
+        "page" => page,
+        "language" => language,
+        "include_adult" => include_adult
+      }
+    )
     |> process_movies(size_pos, language)
   end
 
@@ -316,6 +369,7 @@ defmodule Vemosla.Api.Themoviedb do
 
     put_in(body["results"], results)
   end
+
   defp process_movies({:error, _} = error, _size_pos, _language) do
     error
   end

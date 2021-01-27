@@ -4,7 +4,11 @@ defmodule VemoslaWeb.PostControllerTest do
   alias Vemosla.Timeline
 
   @create_attrs %{description: "some description", movie_id: 42, visibility: "some visibility"}
-  @update_attrs %{description: "some updated description", movie_id: 43, visibility: "some updated visibility"}
+  @update_attrs %{
+    description: "some updated description",
+    movie_id: 43,
+    visibility: "some updated visibility"
+  }
   @invalid_attrs %{description: nil, movie_id: nil, visibility: nil}
 
   def fixture(:post) do
@@ -75,6 +79,7 @@ defmodule VemoslaWeb.PostControllerTest do
     test "deletes chosen post", %{conn: conn, post: post} do
       conn = delete(conn, Routes.post_path(conn, :delete, post))
       assert redirected_to(conn) == Routes.post_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.post_path(conn, :show, post))
       end

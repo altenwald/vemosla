@@ -36,22 +36,44 @@ defmodule Vemosla.Timeline do
   end
 
   def list_my_posts(user_id, size_pos, language) do
-    friends_query =
-      Relation
-      |> Relation.user_id_query(user_id)
-      |> Relation.kind_query("accepted")
-      |> Relation.select_friend_ids()
+    friends_query = Relation.friends_query(user_id)
+    blocked_query = Relation.blocked_query(user_id)
+    blockee_query = Relation.blockee_query(user_id)
 
     Post
-    |> Post.list_my_timeline(friends_query, user_id)
+    |> Post.list_my_timeline(friends_query, blocked_query, blockee_query, user_id)
     |> Repo.all()
-    |> Repo.preload(:reactions)
+    |> Repo.preload([:reactions, user: :profile])
     |> Enum.map(fn post ->
       case Movies.get_movie(post.movie_id, size_pos, language) do
         %{} = movie -> Map.put(post, :movie, movie)
         _ -> Map.put(post, :movie, nil)
       end
     end)
+  end
+
+  def list_want_watch(user_id) do
+    Reaction
+    |> Reaction.want_watch(user_id)
+    |> Repo.all()
+  end
+
+  def count_want_watch(user_id) do
+    Reaction
+    |> Reaction.want_watch(user_id)
+    |> Repo.aggregate(:count)
+  end
+
+  def list_watched(user_id) do
+    Reaction
+    |> Reaction.watched(user_id)
+    |> Repo.all()
+  end
+
+  def count_watched(user_id) do
+    Reaction
+    |> Reaction.watched(user_id)
+    |> Repo.aggregate(:count)
   end
 
   @doc """

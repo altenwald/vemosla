@@ -41,6 +41,7 @@ defmodule Vemosla.Accounts do
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
+
     if User.valid_password?(user, password) do
       Repo.preload(user, :profile)
     end
@@ -233,6 +234,7 @@ defmodule Vemosla.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
+
     Repo.one(query)
     |> Repo.preload(:profile)
   end
@@ -398,9 +400,9 @@ defmodule Vemosla.Accounts do
 
   """
   def create_profile(attrs \\ %{}, user_id)
+
   def create_profile(%{"photo" => %{}} = attrs, user_id) do
-    {final_path, copy_file} =
-      get_file_and_copy(attrs["photo"], user_id)
+    {final_path, copy_file} = get_file_and_copy(attrs["photo"], user_id)
 
     Map.put(attrs, "photo", final_path)
     changeset = Profile.changeset(%Profile{}, attrs)
@@ -410,23 +412,27 @@ defmodule Vemosla.Accounts do
     |> Ecto.Multi.run(:copy_file, copy_file)
     |> Repo.transaction()
   end
+
   def create_profile(attrs, _user_id) do
     Profile.changeset(%Profile{}, attrs)
     |> Repo.insert()
   end
 
   defp get_file_and_copy(file, user_id) do
-    ext = case file.content_type do
-      "image/png" -> ".png"
-      "image/jpg" -> ".jpg"
-      "image/jpeg" -> ".jpg"
-      _ -> ".raw"
-    end
+    ext =
+      case file.content_type do
+        "image/png" -> ".png"
+        "image/jpg" -> ".jpg"
+        "image/jpeg" -> ".jpg"
+        _ -> ".raw"
+      end
+
     final_file = user_id <> ext
     files_path = uploads_files_path()
     url_path = uploads_url_path()
     url_file = Path.join(url_path, final_file)
     final_path = Path.join(files_path, final_file)
+
     {
       url_file,
       fn _repo, _changes ->
@@ -459,8 +465,7 @@ defmodule Vemosla.Accounts do
 
   """
   def update_profile(%Profile{} = profile, %{"photo" => %{}} = attrs) do
-    {final_path, copy_file} =
-      get_file_and_copy(attrs["photo"], profile.user_id)
+    {final_path, copy_file} = get_file_and_copy(attrs["photo"], profile.user_id)
 
     attrs = Map.put(attrs, "photo", final_path)
     changeset = Profile.changeset(profile, attrs)
@@ -470,6 +475,7 @@ defmodule Vemosla.Accounts do
     |> Ecto.Multi.run(:copy_file, copy_file)
     |> Repo.transaction()
   end
+
   def update_profile(%Profile{} = profile, attrs) do
     Profile.changeset(profile, attrs)
     |> Repo.update()

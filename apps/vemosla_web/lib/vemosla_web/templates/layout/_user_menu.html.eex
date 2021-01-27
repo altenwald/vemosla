@@ -1,10 +1,28 @@
-<ul>
-<%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-<% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
-<% end %>
-</ul>
+<div class="navbar-start">
+</div>
+<div class="navbar-end">
+  <%= if @current_user do %>
+    <div class="navbar-item has-dropdown is-hoverable">
+      <%= link to: "#", class: "navbar-link" do %>
+        <img src="<%= @current_user.profile.photo || Routes.static_path(@conn, "/images/astronauta_user.png") %>" alt="" class="avatar"/>
+        <%= @current_user.profile.name %>
+      <% end %>
+      <div class="navbar-dropdown">
+        <%= link "Contactos", to: Routes.contacts_path(@conn, :index), class: "navbar-item" %>
+        <%= link "Invitar", to: Routes.contacts_path(@conn, :new), class: "navbar-item" %>
+        <%= link "Perfil", to: Routes.profile_path(@conn, :show), class: "navbar-item" %>
+        <%= link "Configuración", to: Routes.user_settings_path(@conn, :edit), class: "navbar-item" %>
+        <%= link "Salir", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "navbar-item" %>
+      </div>
+    </div>
+  <% else %>
+    <div class="navbar-item">
+      <div class="buttons">
+        <%= link to: Routes.user_registration_path(@conn, :new), class: "button is-primary" do %>
+          <strong>Registro</strong>
+        <% end %>
+        <%= link "Entrar", to: Routes.user_session_path(@conn, :new), class: "button" %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,47 +1,78 @@
 <%= form_for @changeset, @action, fn f -> %>
   <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p>Oops, ¡algo fue mal! Por favor, verifica los errores de abajo.</p>
+      </div>
+    </article>
+  <% end %>
+
+  <div class="field">
+    <%= label f, :movie_id, "Película", class: "label" %>
+    <div class="control">
+      <%= select f, :movie_id, [], class: "selectize" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :movie_id %></p>
+  </div>
+
+  <div class="field">
+    <%= label f, :description, "Descripción", class: "label" %>
+    <div class="control">
+      <%= textarea f, :description, class: "textarea" %>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :description %></p>
+  </div>
+
+  <%= inputs_for f, :reactions, fn g -> %>
+    <div class="field">
+      <%= label g, :watched, "¿Vista?", class: "label" %>
+      <%= checkbox g, :watched %>
+    </div>
+
+    <div class="field">
+      <%= label g, :reaction, "Reacción", class: "label" %>
+      <div class="control">
+        <div class="select">
+          <%= select g, :reaction_watched, [
+            {"Elige una...", ""},
+            {"🥰 ¡Me encanta!", "love_it"},
+            {"🤯 Alucinante", "mind_blowing"},
+            {"👍 Me gusta", "like_it"},
+            {"😐 Meh", "meh"},
+            {"🥱 Aburrida", "boring"},
+            {"👎 No me gusta", "dislike_it"},
+            {"💩 ¡La odio!", "hate_it"}
+          ], class: "is-hidden" %>
+          <%= select g, :reaction_non_watched, [
+            {"Elige una...", ""},
+            {"😱 ¡Deseando verla!", "hype"},
+            {"😐 Meh...", "meh"},
+            {"🤮 ¡No pienso verla!", "no_way"}
+          ] %>
+        </div>
+      </div>
     </div>
   <% end %>
 
-  <%= label f, :movie_id %>
-  <%= hidden_input f, :movie_id %>
-  <%= text_input f, :movie_str, autocomplete: "off" %>
-  <datalist id="post_movie_options" class="is-hidden">
-  </datalist>
-  <%= error_tag f, :movie_id %>
+  <div class="field">
+    <%= label f, :visibility, "Visibilidad", class: "label" %>
+    <div class="control">
+      <div class="select">
+        <%= select f, :visibility, [
+          {"🌍 Público - Todo el mundo puede verlo", "public"},
+          {"🔒 Privado - Solo tus contactos lo ven", "private"}
+        ] %>
+      </div>
+    </div>
+    <p class="help is-danger"><%= error_tag f, :visibility %></p>
+  </div>
 
-  <%= label f, :description %>
-  <%= textarea f, :description %>
-  <%= error_tag f, :description %>
-
-  <%= inputs_for f, :reactions, fn g -> %>
-    <%= label g, :watched %>
-    <%= checkbox g, :watched %>
-
-    <%= label g, :reaction %>
-    <%= select g, :reaction_watched, [
-      {"Love it!", "love_it"},
-      {"Mind-blowing", "mind_blowing"},
-      {"Like it", "like_it"},
-      {"Meh", "meh"},
-      {"Boring", "boring"},
-      {"Dislike it", "dislike_it"},
-      {"Hate it!", "hate_it"}
-    ] %>
-    <%= select g, :reaction_non_watched, [
-      {"Hype!", "hype"},
-      {"Meh", "meh"},
-      {"No way!", "no_way"}
-    ] %>
-  <% end %>
-
-  <%= label f, :visibility %>
-  <%= select f, :visibility, [{"Public - Everyone can see it", "public"}, {"Private - Only contacts can see it", "private"}] %>
-  <%= error_tag f, :visibility %>
-
-  <div>
-    <%= submit "Save" %>
+  <div class="field is-grouped">
+    <div class="control">
+      <%= submit "Publicar", class: "button is-link" %>
+    </div>
+    <div class="control">
+      <%= link "Cancelar", to: Routes.post_path(@conn, :timeline), class: "button is-light" %>
+    </div>
   </div>
 <% end %>
