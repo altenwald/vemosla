@@ -7,7 +7,23 @@ defmodule Vemosla.Umbrella.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      releases: releases()
+    ]
+  end
+
+  defp releases do
+    [
+      vemosla: [
+        applications: [
+          vemosla: :permanent,
+          vemosla_mail: :permanent,
+          vemosla_web: :permanent,
+          observer_cli: :permanent,
+          logger_file_backend: :permanent
+        ],
+        steps: [:assemble]
+      ]
     ]
   end
 
@@ -24,7 +40,10 @@ defmodule Vemosla.Umbrella.MixProject do
   # Dependencies listed here are available only for this project
   # and cannot be accessed from applications inside the apps/ folder.
   defp deps do
-    []
+    [
+      {:logger_file_backend, "~> 0.0", only: :prod},
+      {:observer_cli, "~> 1.6", only: :prod}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
