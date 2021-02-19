@@ -4,15 +4,15 @@
       <div class="columns is-8 is-variable box">
         <div class="column has-text-left">
 
-<h1 class="is-size-4">Contacts</h1>
+<h1 class="is-size-4"><%= gettext "Contactos" %></h1>
 <hr/>
 
 <%= if length(@received) > 0 do %>
-<h2 class="is-size-5">Contactos Pendientes</h2>
+<h2 class="is-size-5"><%= gettext "Contactos Pendientes" %></h2>
 
 <table class="table">
 <tr>
-  <th colspan="2">Usuario</th>
+  <th colspan="2"><%= gettext "Usuario" %></th>
   <th>Opciones</th>
 </tr>
 <%= for %{user: u} <- @received do %>
@@ -24,8 +24,8 @@
     <%= u.profile.name %>
   </td>
   <td class="is-vcentered">
-    <%= link "Acceptar", to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
-    <%= link "Block", to: Routes.contacts_path(@conn, :block, u.id), class: "button is-danger" %>
+    <%= link gettext("Aceptar"), to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
+    <%= link gettext("Bloquear"), to: Routes.contacts_path(@conn, :block, u.id), class: "button is-danger" %>
   </td>
 </tr>
 <% end %>
@@ -33,11 +33,11 @@
 <hr/>
 <% end %>
 
-<h2 class="is-size-5">Peticiones Pendientes</h2>
+<h2 class="is-size-5"><%= gettext "Peticiones Pendientes" %></h2>
 <%= if length(@sent["pending"] || []) > 0 do %>
 <table class="table">
 <tr>
-  <th colspan="2">Usuario / Email</th>
+  <th colspan="2"><%= gettext "Usuario / Email" %></th>
 </tr>
 <%= for relation <- @sent["pending"] do %>
 <%= if relation.friend do %>
@@ -59,7 +59,7 @@
 <% end %>
 </table>
 <% else %>
-<p>No tienes peticiones de amistad en estos momentos.</p>
+<p><%= gettext "No tienes peticiones de amistad en estos momentos." %></p>
 <% end %>
 <hr/>
 
@@ -67,8 +67,8 @@
 <%= if length(@sent["accepted"] || []) > 0 do %>
 <table class="table">
 <tr>
-  <th colspan="2">Nombre</th>
-  <th>Opciones</th>
+  <th colspan="2"><%= gettext "Nombre" %></th>
+  <th><%= gettext "Opciones" %></th>
 </tr>
 <%= for %{friend: f} <- @sent["accepted"] do %>
 <tr>
@@ -79,22 +79,22 @@
     <%= f.profile.name %>
   </td>
   <td>
-    <%= link "Bloquear", to: Routes.contacts_path(@conn, :block, f.id), class: "button is-danger" %>
+    <%= link gettext("Bloquear"), to: Routes.contacts_path(@conn, :block, f.id), class: "button is-danger" %>
   </td>
 </tr>
 <% end %>
 </table>
 <% else %>
-<p>No tienes amigos en estos momentos 😢</p>
+<p><%= gettext "No tienes amigos en estos momentos 😢" %></p>
 <% end %>
 <hr/>
 
-<h2 class="is-size-5">Bloqueados</h2>
+<h2 class="is-size-5"><%= gettext "Bloqueados" %></h2>
 <%= if length(@blocked) > 0 do %>
 <table class="table">
 <tr>
-  <th colspan="2">Usuario</th>
-  <th>Opciones</th>
+  <th colspan="2"><%= gettext "Usuario" %></th>
+  <th><%= gettext "Opciones" %></th>
 </tr>
 <%= for %{user: u} <- @blocked do %>
 <tr>
@@ -105,13 +105,13 @@
     <%= u.profile.name %>
   </td>
   <td>
-    <%= link "Aceptar", to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
+    <%= link gettext("Aceptar"), to: Routes.contacts_path(@conn, :accept, u.id), class: "button is-success" %>
   </td>
 </tr>
 <% end %>
 </table>
 <% else %>
-<p>No tienes contactos bloqueados en estos momentos 🤗</p>
+<p><%= gettext "No tienes contactos bloqueados en estos momentos 🤗" %></p>
 <% end %>
 
         </div>

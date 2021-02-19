@@ -1,0 +1,81 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: es\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:27
+#: lib/vemosla_web/templates/contacts/index.html.eex:108
+msgid "Aceptar"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:92
+msgid "Bloqueados"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:28
+#: lib/vemosla_web/templates/contacts/index.html.eex:82
+msgid "Bloquear"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:7
+msgid "Contactos"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:11
+msgid "Contactos Pendientes"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:88
+msgid "No tienes amigos en estos momentos 😢"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:114
+msgid "No tienes contactos bloqueados en estos momentos 🤗"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:62
+msgid "No tienes peticiones de amistad en estos momentos."
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:70
+msgid "Nombre"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:71
+#: lib/vemosla_web/templates/contacts/index.html.eex:97
+msgid "Opciones"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:36
+msgid "Peticiones Pendientes"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:15
+#: lib/vemosla_web/templates/contacts/index.html.eex:96
+msgid "Usuario"
+msgstr ""
+
+#, elixir-format
+#: lib/vemosla_web/templates/contacts/index.html.eex:40
+msgid "Usuario / Email"
+msgstr ""

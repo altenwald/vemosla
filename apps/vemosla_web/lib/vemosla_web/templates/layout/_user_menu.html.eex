@@ -1,6 +1,10 @@
 <div class="navbar-start">
 </div>
 <div class="navbar-end">
+  <div class="navbar-item">
+    <%= link "ES", to: "?locale=es" %> |
+    <%= link "EN", to: "?locale=en" %>
+  </div>
   <%= if @current_user do %>
     <div class="navbar-item has-dropdown is-hoverable">
       <%= link to: "#", class: "navbar-link" do %>
