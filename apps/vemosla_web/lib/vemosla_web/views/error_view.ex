@@ -3,8 +3,8 @@ defmodule VemoslaWeb.ErrorView do
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.
-  # def render("500.html", _assigns) do
-  #   "Internal Server Error"
+  # def render("404.html", _assigns) do
+  #   "No encontrada"
   # end
 
   # By default, Phoenix returns the status message from

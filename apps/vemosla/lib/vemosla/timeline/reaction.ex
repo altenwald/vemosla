@@ -30,6 +30,7 @@ defmodule Vemosla.Timeline.Reaction do
     [
       {true, "love_it"},
       {true, "mind_blowing"},
+      {true, "lol"},
       {true, "like_it"},
       {true, "meh"},
       {true, "boring"},
