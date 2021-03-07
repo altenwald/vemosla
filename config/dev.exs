@@ -76,3 +76,13 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix, :stacktrace_depth, 20
 
 config :vemosla_mail, VemoslaMail.Mailer, adapter: Bamboo.LocalAdapter
+
+config :vemosla,
+  uploads_files_path: "files",
+  uploads_url_path: "/files",
+  themoviedb_token:
+    "..."
+
+config :vemosla_web,
+  freegeoip_api_key: "...",
+  phoenix_token_salt: "user socket"
