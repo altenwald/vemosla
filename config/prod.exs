@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :vemosla_web, VemoslaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: {:system, "PORT"}],
-  url: [host: "${DOMAIN}", port: {:system, "PORT"}],
+  url: [host: "${DOMAIN}", port: 443, scheme: "https"],
   cache_static_manifest: "apps/vemosla_web/priv/static/cache_manifest.json",
   server: true,
   secret_key_base: "${SECRET_KEY_BASE}",
@@ -35,7 +35,7 @@ config :vemosla_mail, VemoslaMail.Mailer,
   base_uri: "https://api.eu.mailgun.net/v3"
 
 config :vemosla,
-  uploads_files_path: "files",
+  uploads_files_path: "/home/bombadil/www-data/vemosla.com/FILES",
   uploads_url_path: "/files",
   themoviedb_token: "${THEMOVIEDB_TOKEN}"
 

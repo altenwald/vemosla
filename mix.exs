@@ -4,6 +4,7 @@ defmodule Vemosla.Umbrella.MixProject do
   def project do
     [
       apps_path: "apps",
+      # remember change the version in rel/config.exs as well!
       version: "0.1.1",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
