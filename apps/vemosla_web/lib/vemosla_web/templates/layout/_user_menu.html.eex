@@ -2,6 +2,9 @@
 </div>
 <div class="navbar-end">
   <div class="navbar-item">
+    <%= link "¡Vota!", to: "/features", class: "button" %>
+  </div>
+  <div class="navbar-item">
     <%= link "ES", to: "?locale=es" %> |
     <%= link "EN", to: "?locale=en" %>
   </div>

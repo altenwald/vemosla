@@ -28,6 +28,9 @@ defmodule VemoslaWeb.Router do
 
     get "/", PageController, :index
     get "/about", PageController, :index
+    get "/features", FeatureController, :index
+    get "/features/:id/up", FeatureController, :up
+    get "/features/:id/down", FeatureController, :down
   end
 
   # Other scopes may use custom stacks.
@@ -88,6 +91,8 @@ defmodule VemoslaWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    resources "/features", FeatureController, only: ~w[ new create edit update delete ]a
   end
 
   scope "/", VemoslaWeb do

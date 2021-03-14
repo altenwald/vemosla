@@ -1,0 +1,49 @@
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="columns is-8 is-variable box">
+        <div class="column has-text-left">
+
+<h1 class="is-size-4"><%= gettext "Características" %></h1>
+<hr/>
+
+<table class="table">
+  <tr>
+    <th>Votes</th>
+    <th>Title</th>
+
+    <th></th>
+  </tr>
+<%= for feature <- @features do %>
+    <tr>
+      <td>
+        <%= link to: Routes.feature_path(@conn, :up, feature) do %>
+        <i class="fas fa-chevron-up"></i>
+        <% end %><br/>
+        <%= feature.votes %><br/>
+        <%= link to: Routes.feature_path(@conn, :down, feature) do %>
+        <i class="fas fa-chevron-down"></i>
+        <% end %>
+      </td>
+      <td><%= feature.title %></td>
+
+      <td>
+        <%= if @current_user do %>
+        <%= link "Editar", to: Routes.feature_path(@conn, :edit, feature), class: "button" %>
+        <%= link "Eliminar", to: Routes.feature_path(@conn, :delete, feature), method: :delete, data: [confirm: "Are you sure?"], class: "button is-danger" %>
+        <% end %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= if @current_user do %>
+<%= link "Crear", to: Routes.feature_path(@conn, :new), class: "button is-primary" %>
+<% end %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
