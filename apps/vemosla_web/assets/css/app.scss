@@ -10,6 +10,23 @@ $primary: darken($body-background-color, 15%);
 @import "../node_modules/selectize/dist/css/selectize.bootstrap3.css";
 @import "../node_modules/cookify/cookify.scss";
 
+section#legal {
+  margin-top: 5px;
+}
+
+section#legal h1 {
+  font-size: 20pt;
+  font-weight: bolder;
+  text-decoration: underline;
+  margin-bottom: 20pt;
+}
+
+section#legal p {
+  margin-bottom: 12pt;
+  line-height: 20pt;
+  font-size: 12pt;
+}
+
 div.new-post {
   position: fixed;
   float: right;

@@ -28,6 +28,10 @@ defmodule VemoslaWeb.Router do
 
     get "/", PageController, :index
     get "/about", PageController, :index
+
+    get "/terminos-de-servicio", LegalController, :terminos_de_servicio
+    get "/terms-of-service", LegalController, :terms_of_service
+
     get "/features", FeatureController, :index
     get "/features/:id/up", FeatureController, :up
     get "/features/:id/down", FeatureController, :down
