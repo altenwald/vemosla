@@ -61,7 +61,7 @@ config :vemosla_web, VemoslaWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/vemosla_web/(live|views)/.*(ex)$",
-      ~r"lib/vemosla_web/templates/.*(eex)$"
+      ~r"lib/vemosla_web/templates/.*(md|eex)$"
     ]
   ]
 

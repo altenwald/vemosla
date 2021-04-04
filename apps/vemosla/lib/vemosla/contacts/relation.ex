@@ -76,4 +76,16 @@ defmodule Vemosla.Contacts.Relation do
     |> kind_query("blocked")
     |> select_user_ids()
   end
+
+  def get_relationship(query \\ __MODULE__, user1_id, user2_id) do
+    from(
+      r in query,
+      where: (
+        (r.user_id == ^user1_id and r.friend_id == ^user2_id) or
+        (r.friend_id == ^user1_id and r.user_id == ^user2_id)
+      ),
+      group_by: r.kind,
+      select: r.kind
+    )
+  end
 end

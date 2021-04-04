@@ -47,6 +47,10 @@ if (window.userToken && document.location.pathname == "/posts/new") {
   var delaySearch;
 
   $(function() {
+    Notification.requestPermission().then(function(result) {
+      console.log(result);
+    });
+
     $('#post_movie_id').selectize({
       valueField: 'id',
       labelField: 'title',
@@ -87,6 +91,14 @@ if (window.userToken && document.location.pathname == "/posts/new") {
     })
 
   })
+}
+
+function perform_notification(comment) {
+  var options = {
+      body: comment["comment"],
+      icon: comment["icon"]
+  }
+  console.log(new Notification("Vemosla - Nuevo comentario", options));
 }
 
 function create_comment(comment) {
@@ -171,6 +183,7 @@ if (window.userToken && document.location.pathname == "/timeline") {
 
   reactions.on("update_reactions", reactions => { update_reactions(reactions) })
   comments.on("comment", comment => { create_comment(comment) })
+  comments.on("notification", comment => { perform_notification(comment) })
 
   $(function(){
     $(".reaction-button").on("click", function(event){

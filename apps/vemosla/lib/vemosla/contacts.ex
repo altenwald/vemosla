@@ -45,6 +45,12 @@ defmodule Vemosla.Contacts do
     |> Repo.preload(user: :profile)
   end
 
+  def can_talk_together?(user1_id, user2_id) do
+    Relation
+    |> Relation.get_relationship(user1_id, user2_id)
+    |> Repo.one()
+  end
+
   @doc """
   Gets a single relation.
 
