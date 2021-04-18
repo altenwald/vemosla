@@ -54,7 +54,8 @@ defmodule VemoslaWeb.MixProject do
       {:phx_gen_auth, "~> 0.6", only: [:dev], runtime: false},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
-      {:phoenix_markdown, "~> 1.0"}
+      {:phoenix_markdown, "~> 1.0"},
+      {:google_recaptcha, "~> 0.2"}
     ]
   end
 
