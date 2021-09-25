@@ -24,7 +24,7 @@ defmodule VemoslaWeb.Endpoint do
     at: "/",
     from: :vemosla_web,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(assets fonts images favicon.ico robots.txt)
 
   plug Plug.Static,
     at: Application.get_env(:vemosla, :uploads_url_path),

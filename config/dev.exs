@@ -21,13 +21,7 @@ config :vemosla_web, VemoslaWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../apps/vemosla_web/assets", __DIR__)
-    ]
+    node: ["esbuild.js", "--watch", cd: Path.expand("../apps/vemosla_web/assets", __DIR__)]
   ]
 
 # ## SSL Support
@@ -86,3 +80,5 @@ config :vemosla,
 config :vemosla_web,
   freegeoip_api_key: "...",
   phoenix_token_salt: "user socket"
+
+config :google_recaptcha, enabled: false

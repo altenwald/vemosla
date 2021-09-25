@@ -64,7 +64,14 @@ defmodule VemoslaWeb.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "cmd npm install --prefix assets"],
+      "npm.install": [
+        "cmd npm --prefix assets install"
+      ],
+      "assets.deploy": [
+        "cmd npm --prefix assets run deploy",
+        "phx.digest"
+      ],
+      setup: ["deps.get", "npm.install"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end

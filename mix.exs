@@ -61,8 +61,6 @@ defmodule Vemosla.Umbrella.MixProject do
     [
       # run `mix setup` in all child apps
       setup: ["cmd mix setup"],
-      "assets.compile": &compile_assets/1,
-      "npm.install": &npm_install/1,
       release: [
         "local.hex --force",
         "local.rebar --force",
@@ -70,25 +68,9 @@ defmodule Vemosla.Umbrella.MixProject do
         "deps.get",
         "compile",
         "npm.install",
-        "assets.compile",
-        "phx.digest",
+        "assets.deploy",
         "distillery.release --upgrade --env=prod"
       ]
     ]
-  end
-
-  defp compile_assets(_) do
-    if File.dir?("apps/vemosla_web/priv/static"), do: File.rm_rf!("apps/vemosla_web/priv/static")
-    webpack = "cd apps/vemosla_web/assets && node node_modules/webpack/bin/webpack.js"
-
-    if Mix.env() != :prod do
-      Mix.shell().cmd("#{webpack} --mode development")
-    else
-      Mix.shell().cmd("#{webpack} --mode production")
-    end
-  end
-
-  defp npm_install(_) do
-    Mix.shell().cmd("cd apps/vemosla_web/assets && npm i && npm rebuild node-sass")
   end
 end
